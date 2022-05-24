@@ -6,8 +6,8 @@ fs.promises.readdir(path.resolve(__dirname, 'secret-folder')).then((files) => {
         const filePath = path.resolve(__dirname, 'secret-folder', file);
         fs.promises.stat(filePath).then((fileInfo) => {
             if (!fileInfo.isFile()) { return }
-            const [name, ext] = file.split('.');
-            console.log(`${name} - ${ext} - ${fileInfo.size}`)
+            const {name, ext} = path.parse(filePath);
+            console.log(`${name} - ${ext.slice(1)} - ${fileInfo.size}`)
         });
     })
 });
