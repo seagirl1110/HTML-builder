@@ -9,8 +9,8 @@ const mergeStyles = (src, dest) => {
             const filePath = path.resolve(src, file);
             fs.promises.stat(filePath).then((fileInfo) => {
                 if (!fileInfo.isFile()) { return }
-                const ext = file.split('.')[1];
-                if (ext !== 'css') { return }
+                const ext = path.extname(filePath);
+                if (ext !== '.css') { return }
                 const readableStream = fs.createReadStream(path.resolve(src, file), 'utf-8');
                 readableStream.on('data', data => outputCss.write(data));
             });
@@ -41,8 +41,9 @@ const createHtml = async (src, dest, data) => {
     let html = template.toString();
     const components = await fs.promises.readdir(data);
     for (const component of components) {
-        const componentName = component.split('.')[0];
         const componentPath = path.resolve(data, component);
+        const componentExt = path.extname(componentPath);
+        const componentName = path.basename(componentPath, componentExt);
         const componentData = await fs.promises.readFile(componentPath);
         const componentDataStr = componentData.toString();
         html = html.replace(`{{${componentName}}}`, componentDataStr);
